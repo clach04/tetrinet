@@ -73,6 +73,7 @@ Tetrinet requires two command-line arguments: your nickname and the server
 to connect to, in that order.  For example:
 
 	tetrinet MyNick tetrinet.somerandom.net
+	tetrinet $USER localhost
 
 Tetrinet will function only as long as it remains connected to the server;
 there is no "Client Settings" option as in the Windows version.  This may
