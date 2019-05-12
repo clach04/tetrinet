@@ -34,7 +34,7 @@ int sgetc(int s)
 	lastchar = EOF;
 	return c;
     }
-    if (read(s, &ch, 1) != 1)
+    if (recv(s, &ch, 1, 0) != 1)
 	return EOF;
     c = ch & 0xFF;
     return c;
@@ -100,11 +100,11 @@ int sputs(const char *str, int s)
 	}
     }
     if (*str != 0) {
-	n = write(s, str, strlen(str));
+	n = send(s, str, strlen(str), 0);
 	if (n <= 0)
 	    return n;
     }
-    if (write(s, &c, 1) <= 0)
+    if (send(s, &c, 1, 0) <= 0)
 	return n;
     return n+1;
 }
