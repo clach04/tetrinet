@@ -20,6 +20,16 @@ limitation.
 
 Requirements
 ------------
+
+### Build Requirements
+
+A curses implementation is required, Makefile is configured to use ncurses.
+E.g. to get required dependencies in Debian, Ubuntu, etc, issue:
+
+    sudo apt-get install libncurses5
+
+### Runtime Requirements
+
 You must be using a 50-line text display to run this version of Tetrinet;
 Xwindows is not yet supported.  One option is to open an xterm window in
 Xwindows and resize it to be 50 lines high.  The other option (recommended)
