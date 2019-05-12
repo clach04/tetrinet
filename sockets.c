@@ -9,16 +9,25 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
+
+#ifdef __WIN32__
+//#include <winsock.h>  // winsock1 (fd_set)
+#include <winsock2.h>
+#include <ws2tcpip.h>  // for NI_MAXHOST
+//#define write(a,b,c)  send(a,b,c,0)
+#else
 #include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#endif
+
 #include <sys/time.h>
 #include <unistd.h>
 #include <string.h>
 #include "sockets.h"
 #include "tetrinet.h"
 
-static FILE *logfile;
+static FILE *logfile=NULL;
 
 /*************************************************************************/
 
@@ -34,7 +43,8 @@ int sgetc(int s)
 	lastchar = EOF;
 	return c;
     }
-    if (read(s, &ch, 1) != 1)
+    //if (read(s, &ch, 1) != 1)
+    if (recv(s, &ch, 1, 0) != 1)
 	return EOF;
     c = ch & 0xFF;
     return c;
@@ -100,11 +110,16 @@ int sputs(const char *str, int s)
 	}
     }
     if (*str != 0) {
-	n = write(s, str, strlen(str));
+	//n = write(s, str, strlen(str));
+	n = send(s, str, strlen(str), 0);
+	if (logfile) {
+		fprintf(logfile, "len sent: %d\n", n);
+	}
 	if (n <= 0)
 	    return n;
     }
-    if (write(s, &c, 1) <= 0)
+    //if (write(s, &c, 1) <= 0)
+    if (send(s, &c, 1, 0) <= 0)
 	return n;
     return n+1;
 }
@@ -137,6 +152,15 @@ int conn(const char *host, int port, char ipbuf[4])
     struct sockaddr_in sa;
 #endif
     int sock = -1;
+
+	/*
+#ifdef __WIN32__
+   WSADATA wsaData;
+   WSAStartup(MAKEWORD(1, 1), &wsaData);
+   //WSAStartup(MAKEWORD(2, 0), &wsaData);
+   //WSAStartup(MAKEWORD(2, 2), &wsaData);
+#endif
+	*/
 
 #ifdef HAVE_IPV6
     snprintf(service, sizeof(service), "%d", port);
@@ -200,6 +224,11 @@ void disconn(int s)
 {
     shutdown(s, 2);
     close(s);
+	/*
+#ifdef __WIN32__
+   WSACleanup();
+#endif
+	*/
 }
 
 /*************************************************************************/

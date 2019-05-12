@@ -12,6 +12,10 @@
 #include "tetris.h"
 #include "io.h"
 #include "sockets.h"
+#ifdef __WIN32__
+// for mingw FIXME
+#define random rand
+#endif
 
 /*************************************************************************/
 

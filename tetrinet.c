@@ -11,6 +11,13 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+
+#ifdef __WIN32__
+//#include <winsock.h>  // winsock1 (fd_set)
+#include <winsock2.h>
+#endif
+
+
 #include "tetrinet.h"
 #include "io.h"
 #include "server.h"
@@ -742,6 +749,21 @@ int init(int ac, char **av)
 int main(int ac, char **av)
 {
     int i;
+#ifdef __WIN32__
+	/*
+   WSADATA wsaData;
+   //WSAStartup(MAKEWORD(1, 1), &wsaData);
+   //WSAStartup(MAKEWORD(2, 0), &wsaData);
+   WSAStartup(MAKEWORD(2, 2), &wsaData);
+https://stackoverflow.com/questions/4638604/where-does-one-get-the-sys-socket-h-header-source-file/4642169
+	https://stackoverflow.com/questions/1517762/sockets-in-mingw
+	*/
+	
+   //WORD versionWanted = MAKEWORD(1, 1);
+   WORD versionWanted = MAKEWORD(2, 2);
+   WSADATA wsaData;
+   WSAStartup(versionWanted, &wsaData);
+#endif
 
     if ((i = init(ac, av)) != 0)
 	return i;
@@ -807,6 +829,9 @@ int main(int ac, char **av)
     }
 
     disconn(server_sock);
+#ifdef __WIN32__
+   WSACleanup();
+#endif
     return 0;
 }
 

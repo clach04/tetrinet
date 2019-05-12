@@ -11,12 +11,28 @@
 #include <ctype.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <signal.h>
+
+#ifdef __WIN32__
+//#include <winsock.h>  // winsock1 (fd_set)
+#include <winsock2.h>
+#include <ws2tcpip.h>  // for NI_MAXHOST
+//#include <winsock2.h>
+    #define SIGTSTP SIGILL  // FIXME mingw hack
+    #define SIGHUP SIGTSTP
+    #define SIGUSR1 SIGTSTP
+    #define SIGUSR2 SIGTSTP
+    #define SIGALRM SIGTSTP  // ?use __USE_MINGW_ALARM
+    #define SIGPIPE SIGTSTP
+#else
 #include <netinet/in.h>
 /* Due to glibc brokenness, we can't blindly include this.  Yet another
  * reason to not use glibc. */
 /* #include <netinet/protocols.h> */
-#include <signal.h>
 #include <sys/socket.h>
+#endif
+
+
 #include <sys/time.h>
 #include <unistd.h>
 #include "tetrinet.h"

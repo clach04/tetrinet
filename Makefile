@@ -4,10 +4,12 @@
 CC = cc
 
 # The passed compilation flags
-CFLAGS = -O2 -I/usr/include/ncurses -g -Wall -fno-builtin-log
+#CFLAGS = -O2 -I/usr/include/ncurses -g -Wall -fno-builtin-log
+CFLAGS = -O2 -I/c/del_tmp/win/PDCurses -g -Wall -fno-builtin-log
 
 # Whether to enable IPv6 support
-IPV6 = 1
+IPV6 = 1  # default
+IPV6 = 0  # Windows hack
 
 # Whether to have builtin server in the tetrinet client (available through
 # -server argument) (tetrinet-server will be built always regardless this)
@@ -57,10 +59,11 @@ binonly:
 
 
 tetrinet: $(OBJS)
-	$(CC) -o $@ $(OBJS) -lncurses
+	$(CC) -o $@ $(OBJS) -lncurses -lws2_32
+#	$(CC) -o $@ $(OBJS) -lncurses
 
 tetrinet-server: server.c sockets.c tetrinet.c tetris.c server.h sockets.h tetrinet.h tetris.h
-	$(CC) $(CFLAGS) -o $@ -DSERVER_ONLY server.c sockets.c tetrinet.c tetris.c
+	$(CC) $(CFLAGS) -o $@ -DSERVER_ONLY server.c sockets.c tetrinet.c tetris.c  -lws2_32
 
 .c.o:
 	$(CC) $(CFLAGS) -c $<
