@@ -15,4 +15,7 @@ extern int sockprintf(int s, const char *fmt, ...);
 extern int conn(const char *host, int port, char ipbuf[4]);
 extern void disconn(int s);
 
+extern void socket_init(void);
+extern void socket_end(void);
+
 #endif	/* SOCKETS_H */

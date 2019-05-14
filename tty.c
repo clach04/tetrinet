@@ -13,6 +13,17 @@
 #include <curses.h>
 #include <errno.h>
 #include <signal.h>
+#ifdef __WIN32__
+    #define SIGTSTP SIGILL  // FIXME mingw hack
+    #define SIGHUP SIGTSTP
+    #define SIGUSR1 SIGTSTP
+    #define SIGUSR2 SIGTSTP
+    #define SIGALRM SIGTSTP  // ?use __USE_MINGW_ALARM
+    #define SIGPIPE SIGTSTP
+    #define psignal(a, b) printf("psignal() hack %d, %s\n", a, b)
+
+    #include <winsock2.h>
+#endif
 #include <sys/time.h>
 #include "tetrinet.h"
 #include "tetris.h"

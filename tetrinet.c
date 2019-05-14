@@ -743,6 +743,7 @@ int main(int ac, char **av)
 {
     int i;
 
+    socket_init();
     if ((i = init(ac, av)) != 0)
 	return i;
 
@@ -807,6 +808,7 @@ int main(int ac, char **av)
     }
 
     disconn(server_sock);
+    socket_end();
     return 0;
 }
 

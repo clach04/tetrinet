@@ -11,12 +11,19 @@
 #include <ctype.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <netinet/in.h>
-/* Due to glibc brokenness, we can't blindly include this.  Yet another
- * reason to not use glibc. */
-/* #include <netinet/protocols.h> */
 #include <signal.h>
-#include <sys/socket.h>
+#ifdef __WIN32__
+    #define SIGHUP SIGILL
+
+    #include <winsock2.h>
+    #include <ws2tcpip.h>  // for NI_MAXHOST
+#else
+    #include <netinet/in.h>
+    /* Due to glibc brokenness, we can't blindly include this.  Yet another
+     * reason to not use glibc. */
+    /* #include <netinet/protocols.h> */
+    #include <sys/socket.h>
+#endif
 #include <sys/time.h>
 #include <unistd.h>
 #include "tetrinet.h"
@@ -984,6 +991,7 @@ int server_main()
 {
     int i;
 
+    socket_init();
     if ((i = init()) != 0)
 	return i;
     while (!quit)
@@ -997,6 +1005,7 @@ int server_main()
 #endif
     for (i = 0; i < 6; i++)
 	close(player_socks[i]);
+    socket_end();
     return 0;
 }
 

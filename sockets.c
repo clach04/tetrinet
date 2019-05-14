@@ -9,9 +9,14 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
+#ifdef __WIN32__
+    #include <winsock2.h>
+    #include <ws2tcpip.h>
+#else
+    #include <netdb.h>
+    #include <netinet/in.h>
+    #include <sys/socket.h>
+#endif
 #include <sys/time.h>
 #include <unistd.h>
 #include <string.h>
@@ -203,3 +208,19 @@ void disconn(int s)
 }
 
 /*************************************************************************/
+void socket_init(void)
+{
+#ifdef __WIN32__
+   WSADATA wsaData;
+   WSAStartup(MAKEWORD(1, 1), &wsaData);
+   //WSAStartup(MAKEWORD(2, 0), &wsaData);
+   //WSAStartup(MAKEWORD(2, 2), &wsaData);
+#endif
+}
+
+void socket_end(void)
+{
+#ifdef __WIN32__
+   WSACleanup();
+#endif
+}
