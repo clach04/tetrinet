@@ -650,8 +650,8 @@ void do_special(const char *type, int from, int to)
 			    continue;
 			tries = 10;
 			while (tries--) {
-			    xnew = random() % FIELD_WIDTH;
-			    ynew = FIELD_HEIGHT-1 - random()%16;
+			    xnew = rand() % FIELD_WIDTH;
+			    ynew = FIELD_HEIGHT-1 - rand()%16;
 			    if (windows_mode || !(*f)[ynew][xnew]) {
 				(*f)[ynew][xnew] = (*f)[y2][x2];
 				break;
